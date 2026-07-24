@@ -8,6 +8,11 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+env:
+  AWS_REGION: "ap-southereast-2"
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
 
 jobs:
   build:
@@ -15,7 +20,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Git clone the repository
+      uses: actions/checkout@v4
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+          role-to-assume: arn:aws:iam::148816906472:role/GitHubPermissions-CustomAWSCDKOpenIdConnectProvider-e9cauNisMvSd
+          role-session-name: github-actions
+          aws-region: ${{ env.AWS_REGION }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -26,3 +38,4 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
