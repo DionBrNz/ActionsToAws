@@ -10,6 +10,7 @@ namespace AccountProcessingInfra
         public static void Main(string[] args)
         {
             var app = new App();
+            new GithubPermissions(app, "GitHubPermissions", new StackProps());
             new AccountProcessingInfraStack(app, "AccountProcessingInfraStack", new StackProps
             {
                 // If you don't specify 'env', this stack will be environment-agnostic.

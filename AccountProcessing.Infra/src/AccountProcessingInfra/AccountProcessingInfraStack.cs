@@ -13,7 +13,8 @@ namespace AccountProcessingInfra
             // Define the Lambda function
             var function = new Function(this, "UpperCase", new FunctionProps
             {
-                Handler = "UpperCase::UpperCase.Function::FunctionHandler",
+                Handler = "UpperCase::UpperCase.Function::FunctionHandler", 
+                FunctionName = "UpperCase",
                 Runtime = Runtime.DOTNET_10,
                 Architecture = Architecture.ARM_64,
                 Code = Code.FromAsset("..\\AccountProcessing\\bin\\Debug\\net10.0"),
@@ -21,7 +22,15 @@ namespace AccountProcessingInfra
                 LoggingFormat = LoggingFormat.JSON
             });
             // Explicitly define the log group for the Lambda function
-           
+            var logGroup = new LogGroup(this, "UpperCaseLogGroup", new LogGroupProps
+            {
+                LogGroupName = $"/aws/lambda/uppercase",
+                Retention = RetentionDays.ONE_DAY,
+                RemovalPolicy = RemovalPolicy.DESTROY // Automatically delete the log group when the stack is destroyed
+            });
+
+            logGroup.GrantWrite(function);
+
             // Define the API Gateway
             var api = new RestApi(this, "MyApiGateway", new RestApiProps
             {
