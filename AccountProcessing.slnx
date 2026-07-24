@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AccountProcessing.Infra/src/AccountProcessingInfra/AccountProcessingInfra.csproj" />
+  <Project Path="AccountProcessing.Tests/AccountProcessing.Tests.csproj" />
+  <Project Path="AccountProcessing/UpperCase.csproj" />
+</Solution>
