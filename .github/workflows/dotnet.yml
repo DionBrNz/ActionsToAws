@@ -22,9 +22,6 @@ jobs:
     steps:
     - name: Git clone the repository
       uses: actions/checkout@v4
-    - run: |
-          ID_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://demo" | jq -r .value)
-          echo $ID_TOKEN | base64
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v6
       with:
@@ -43,6 +40,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Deploy
       run: | 
-        cd AccountProcessing.Infra
+        pwd
+        cd src/AccountProcessing.Infra
         cdk deploy AccountProcessingInfraStack
 
