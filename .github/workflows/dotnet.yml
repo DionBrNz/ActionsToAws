@@ -28,7 +28,7 @@ jobs:
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v6
       with:
-          role-to-assume: arn:aws:iam::148816906472:role/GitHubPermissions-CustomAWSCDKOpenIdConnectProvider-e9cauNisMvSd
+          role-to-assume: arn:aws:iam::148816906472:role/GitHubPermissions-GithubActionsRoleF5CC769F-N19YkYZAWUvP
           role-session-name: github-actions
           aws-region: ${{ env.AWS_REGION }}
     - name: Setup .NET
