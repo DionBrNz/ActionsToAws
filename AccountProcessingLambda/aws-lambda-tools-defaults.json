@@ -6,12 +6,10 @@
     "All the command line options for the Lambda command can be specified in this file."
   ],
   "profile": "amplify",
-  "region": "",
+  "region": "ap-southeast-2",
   "configuration": "Release",
-  "function-architecture": "x86_64",
   "function-runtime": "dotnet10",
   "function-memory-size": 512,
   "function-timeout": 30,
-  "function-handler": "AccountProcessing::AccountProcessing.Function::FunctionHandler",
-  "environment-variables": "POWERTOOLS_SERVICE_NAME=PowertoolsFunction;POWERTOOLS_LOG_LEVEL=Info;POWERTOOLS_LOGGER_CASE=PascalCase;POWERTOOLS_TRACER_CAPTURE_RESPONSE=true;POWERTOOLS_TRACER_CAPTURE_ERROR=true;POWERTOOLS_METRICS_NAMESPACE=powertools_function"
+  "function-handler": "AccountProcessingLambda"
 }

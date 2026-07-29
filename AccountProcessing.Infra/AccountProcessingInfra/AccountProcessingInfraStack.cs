@@ -2,6 +2,7 @@ using Amazon.CDK;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.Logs;
 using Amazon.CDK.AWS.APIGateway;
+using Amazon.CDK.AWS.DynamoDB;
 using Constructs;
 
 namespace AccountProcessingInfra
@@ -10,6 +11,17 @@ namespace AccountProcessingInfra
     {
         public AccountProcessingInfraStack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
+            var accountTable = new Table(this, "AccountsTable", new TableProps
+            {
+                BillingMode = BillingMode.PAY_PER_REQUEST,
+                PartitionKey = new Attribute
+                {
+                    Name = "AccountId",
+                    Type = AttributeType.STRING
+                }
+
+            });
+
             // Define the Lambda function
             var function = new Function(this, "UpperCase", new FunctionProps
             {
@@ -17,7 +29,7 @@ namespace AccountProcessingInfra
                 FunctionName = "UpperCase",
                 Runtime = Runtime.DOTNET_10,
                 Architecture = Architecture.ARM_64,
-                Code = Code.FromAsset("AccountProcessing/bin/Debug/net10.0"),
+                Code = Code.FromAsset("AccountProcessingLambda/bin/Debug/net10.0"),
                 Timeout = Duration.Seconds(10),
                 LoggingFormat = LoggingFormat.JSON
             });
@@ -30,6 +42,7 @@ namespace AccountProcessingInfra
             });
 
             logGroup.GrantWrite(function);
+            accountTable.GrantReadWriteData(function);
 
             // Define the API Gateway
             var api = new RestApi(this, "MyApiGateway", new RestApiProps
@@ -44,6 +57,8 @@ namespace AccountProcessingInfra
             {
                 // Optional: Add authorization or other method options here
             });
+
+            
         }
     }
 }

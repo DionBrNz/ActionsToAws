@@ -47,6 +47,13 @@ project.fragment.lock.json
 artifacts/
 **/Properties/launchSettings.json
 
+#Cdk
+cdk.context.json
+.cdk.staging/
+cdk.out/
+*.tabl.json
+cdk-integ.out.*/
+
 # VS Code
 .vscode/
 

@@ -3,5 +3,6 @@
     <File Path=".github/workflows/dotnet.yml" />
   </Folder>
   <Project Path="AccountProcessing.Infra/AccountProcessingInfra/AccountProcessingInfra.csproj" />
-  <Project Path="AccountProcessing/UpperCase.csproj" />
+  <Project Path="AccountProcessingLambda/AccountProcessingLambda.csproj" />
+  <Project Path="Functional/Functional.csproj" Id="cba3bc42-0f18-40ff-b1a6-480049f930d8" />
 </Solution>

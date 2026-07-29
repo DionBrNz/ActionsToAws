@@ -1,38 +1,34 @@
-# AWS Lambda Function Project with Powertools for AWS Lambda (.NET)
+# AWS Lambda Function Using Top Level Statements
 
 This starter project consists of:
-
-* Function.cs - class file containing a class with a single function handler method
+* Function.cs - file contain C# top level statements that define the function to be called for each event and starts the Lambda runtime client.
 * aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
 
 You may also have a test project depending on the options selected.
 
 The generated function handler is a simple method accepting a string argument that returns the uppercase equivalent of the input string. Replace the body of this method, and parameters, to suit your needs.
 
-## Powertools for AWS Lambda (.NET)
+## Executable Assembly
 
-[Powertools for AWS Lambda (.NET)](https://awslabs.github.io/aws-lambda-powertools-dotnet/) is a developer toolkit to implement Serverless best practices and increase developer velocity.
+.NET Lambda projects that use C# top level statements like this project must be deployed as an executable assembly instead of a class library. To indicate to Lambda that the .NET function is an executable assembly the 
+Lambda function handler value is set to the .NET Assembly name. This is different then deploying as a class library where the function handler string includes the assembly, type and method name.
 
-This starter project comes with Powertools Loging, Metrics and Tracing configured through environment variables defined in the `aws-lambda-tools-defaults.json` file and annotations on methods in `Function.cs`
+To deploy as an executable assembly the Lambda runtime client must be started to listen for incoming events to process. To start
+the Lambda runtime client add the `Amazon.Lambda.RuntimeSupport` NuGet package and add the following code at the end of the
+of the file containing top-level statements to start the runtime.
 
-**Environment variables:**
+```csharp
+await LambdaBootstrapBuilder.Create(handler, new DefaultLambdaJsonSerializer())
+        .Build()
+        .RunAsync();
+```
 
-* POWERTOOLS_SERVICE_NAME=PowertoolsFunction
-* POWERTOOLS_LOG_LEVEL=Info
-* POWERTOOLS_LOGGER_CASE=PascalCase
-* POWERTOOLS_TRACER_CAPTURE_RESPONSE=true
-* POWERTOOLS_TRACER_CAPTURE_ERROR=true
-* POWERTOOLS_METRICS_NAMESPACE=powertools_function
+Pass into the Lambda runtime client a function handler as either an `Action<>` or `Func<>` for the code that 
+should be called for each event. If the handler takes in an input event besides `System.IO.Stream` then
+the JSON serializer must also be passed into the `Create` method.
 
-References to the environment variables can be found [here]([https://](https://awslabs.github.io/aws-lambda-powertools-dotnet/references/))
 
-**Included NuGet Packages:**
-
-* [AWS.Lambda.Powertools.Logging](https://awslabs.github.io/aws-lambda-powertools-dotnet/core/logging/)
-* [AWS.Lambda.Powertools.Metrics](https://awslabs.github.io/aws-lambda-powertools-dotnet/core/metrics/)
-* [AWS.Lambda.Powertools.Tracing](https://awslabs.github.io/aws-lambda-powertools-dotnet/core/tracing/)
-
-## Here are some steps to follow from Visual Studio
+## Here are some steps to follow from Visual Studio:
 
 To deploy your function to AWS Lambda, right click the project in Solution Explorer and select *Publish to AWS Lambda*.
 
@@ -46,32 +42,22 @@ To update the runtime configuration of your deployed function use the Configurat
 
 To view execution logs of invocations of your function use the Logs tab in the opened Function View window.
 
-## Here are some steps to follow to get started from the command line
+## Here are some steps to follow to get started from the command line:
 
 Once you have edited your template and code you can deploy your application using the [Amazon.Lambda.Tools Global Tool](https://github.com/aws/aws-extensions-for-dotnet-cli#aws-lambda-amazonlambdatools) from the command line.
 
 Install Amazon.Lambda.Tools Global Tools if not already installed.
-
 ```
     dotnet tool install -g Amazon.Lambda.Tools
 ```
 
 If already installed check if new version is available.
-
 ```
     dotnet tool update -g Amazon.Lambda.Tools
 ```
 
-Execute unit tests
-
-```
-    cd "AccountProcessing/test/AccountProcessing.Tests"
-    dotnet test
-```
-
 Deploy function to AWS Lambda
-
 ```
-    cd "AccountProcessing/src/AccountProcessing"
+    cd "AccountProcessingLambda/src/AccountProcessingLambda"
     dotnet lambda deploy-function
 ```
