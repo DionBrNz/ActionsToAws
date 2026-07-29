@@ -25,7 +25,7 @@ namespace AccountProcessingInfra
             // Define the Lambda function
             var function = new Function(this, "UpperCase", new FunctionProps
             {
-                Handler = "UpperCase::UpperCase.Function::FunctionHandler", 
+                Handler = "AccountProcessingLambda", 
                 FunctionName = "UpperCase",
                 Runtime = Runtime.DOTNET_10,
                 Architecture = Architecture.ARM_64,

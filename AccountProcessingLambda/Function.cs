@@ -5,6 +5,7 @@ using Amazon.Lambda.Serialization.SystemTextJson;
 using AWS.Lambda.Powertools.Logging;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
+    
 // The function handler that will be called for each Lambda event
 [Logging(LogEvent = true, Service = "AccountProcessing", LogLevel = LogLevel.Information)]
 string Handler(APIGatewayProxyRequest request, ILambdaContext context)
