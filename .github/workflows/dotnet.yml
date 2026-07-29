@@ -39,8 +39,5 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Deploy
-      run: | 
-        pwd
-        cd src/AccountProcessing.Infra
-        cdk deploy AccountProcessingInfraStack
+      run: cdk deploy AccountProcessingInfraStack
 

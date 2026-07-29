@@ -32,7 +32,9 @@ public class GithubPermissions : Stack
                         "StringLike", new Dictionary<string, object>
                         {
                             // Replace with your actual org/repo
-                            { "token.actions.githubusercontent.com:sub", "repo:DionBrNz/ActionsToAws:*" }
+
+                            { "token.actions.githubusercontent.com:sub", new [] { "repo:DionBrNz@37971358/*", "repo:DionBrNz/*" } }
+                            
                         }
                     }
                 },
@@ -51,7 +53,7 @@ public class GithubPermissions : Stack
                             new PolicyStatement(new PolicyStatementProps
                             {
                                 Effect = Effect.ALLOW,
-                                Actions = ["s3:ListAllMyBuckets"],
+                                Actions = ["sts:AssumeRoleWithWebIdentity"],
                                 Resources =  ["*"]
                             })
                         ]

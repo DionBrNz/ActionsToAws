@@ -17,7 +17,7 @@ namespace AccountProcessingInfra
                 FunctionName = "UpperCase",
                 Runtime = Runtime.DOTNET_10,
                 Architecture = Architecture.ARM_64,
-                Code = Code.FromAsset("..\\AccountProcessing\\bin\\Debug\\net10.0"),
+                Code = Code.FromAsset("AccountProcessing\\bin\\Debug\\net10.0"),
                 Timeout = Duration.Seconds(10),
                 LoggingFormat = LoggingFormat.JSON
             });

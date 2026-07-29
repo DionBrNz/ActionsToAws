@@ -2,6 +2,6 @@
   <Folder Name="/Solution Items/">
     <File Path=".github/workflows/dotnet.yml" />
   </Folder>
-  <Project Path="AccountProcessing.Infra/src/AccountProcessingInfra/AccountProcessingInfra.csproj" />
+  <Project Path="AccountProcessing.Infra/AccountProcessingInfra/AccountProcessingInfra.csproj" />
   <Project Path="AccountProcessing/UpperCase.csproj" />
 </Solution>

@@ -1,0 +1,241 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "UpperCase/1.0.0": {
+        "dependencies": {
+          "AWS.Lambda.Powertools.Logging": "3.2.2",
+          "AWS.Lambda.Powertools.Metrics": "3.2.2",
+          "AWS.Lambda.Powertools.Tracing": "3.2.2",
+          "Amazon.Lambda.APIGatewayEvents": "3.0.0",
+          "Amazon.Lambda.Core": "3.2.0",
+          "Amazon.Lambda.Serialization.SystemTextJson": "3.0.0"
+        },
+        "runtime": {
+          "UpperCase.dll": {}
+        }
+      },
+      "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+        "runtime": {
+          "lib/net10.0/Amazon.Lambda.APIGatewayEvents.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.2.0.0"
+          }
+        }
+      },
+      "Amazon.Lambda.Core/3.2.0": {
+        "runtime": {
+          "lib/net10.0/Amazon.Lambda.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Amazon.Lambda.Serialization.SystemTextJson/3.0.0": {
+        "dependencies": {
+          "Amazon.Lambda.Core": "3.2.0"
+        },
+        "runtime": {
+          "lib/net10.0/Amazon.Lambda.Serialization.SystemTextJson.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Amazon.Lambda.SQSEvents/2.1.0": {
+        "runtime": {
+          "lib/netcoreapp3.1/Amazon.Lambda.SQSEvents.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "AspectInjector/2.8.1": {
+        "runtime": {
+          "lib/netstandard2.0/AspectInjector.Broker.dll": {
+            "assemblyVersion": "2.8.1.0",
+            "fileVersion": "2.8.1.0"
+          }
+        }
+      },
+      "AWS.Lambda.Powertools.Logging/3.2.2": {
+        "dependencies": {
+          "Amazon.Lambda.Core": "3.2.0",
+          "Amazon.Lambda.Serialization.SystemTextJson": "3.0.0",
+          "AspectInjector": "2.8.1"
+        },
+        "runtime": {
+          "lib/net10.0/AWS.Lambda.Powertools.Logging.dll": {
+            "assemblyVersion": "3.2.2.0",
+            "fileVersion": "3.2.2.0"
+          }
+        }
+      },
+      "AWS.Lambda.Powertools.Metrics/3.2.2": {
+        "dependencies": {
+          "Amazon.Lambda.Core": "3.2.0",
+          "AspectInjector": "2.8.1"
+        },
+        "runtime": {
+          "lib/net10.0/AWS.Lambda.Powertools.Metrics.dll": {
+            "assemblyVersion": "3.2.2.0",
+            "fileVersion": "3.2.2.0"
+          }
+        }
+      },
+      "AWS.Lambda.Powertools.Tracing/3.2.2": {
+        "dependencies": {
+          "AWSSDK.XRay": "4.0.3.7",
+          "AWSXRayRecorder.Core": "2.15.0",
+          "AWSXRayRecorder.Handlers.AwsSdk": "2.13.0",
+          "Amazon.Lambda.Core": "3.2.0",
+          "Amazon.Lambda.Serialization.SystemTextJson": "3.0.0",
+          "AspectInjector": "2.8.1"
+        },
+        "runtime": {
+          "lib/net10.0/AWS.Lambda.Powertools.Tracing.dll": {
+            "assemblyVersion": "3.2.2.0",
+            "fileVersion": "3.2.2.0"
+          }
+        }
+      },
+      "AWSSDK.Core/4.0.3.5": {
+        "runtime": {
+          "lib/net8.0/AWSSDK.Core.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.3.5"
+          }
+        }
+      },
+      "AWSSDK.XRay/4.0.3.7": {
+        "dependencies": {
+          "AWSSDK.Core": "4.0.3.5"
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.XRay.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.3.7"
+          }
+        }
+      },
+      "AWSXRayRecorder.Core/2.15.0": {
+        "dependencies": {
+          "AWSSDK.Core": "4.0.3.5",
+          "Amazon.Lambda.SQSEvents": "2.1.0"
+        },
+        "runtime": {
+          "lib/net6.0/AWSXRayRecorder.Core.dll": {
+            "assemblyVersion": "2.15.0.0",
+            "fileVersion": "2.15.0.0"
+          }
+        }
+      },
+      "AWSXRayRecorder.Handlers.AwsSdk/2.13.0": {
+        "dependencies": {
+          "AWSXRayRecorder.Core": "2.15.0"
+        },
+        "runtime": {
+          "lib/net6.0/AWSXRayRecorder.Handlers.AwsSdk.dll": {
+            "assemblyVersion": "2.13.0.0",
+            "fileVersion": "2.13.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "UpperCase/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1JxlUCqIps7p9FLRfFrgaLCVqgg2J39ZOmZDmV/R1LMwb2eT4/glaKwhxC3r01HeDsozk1jUe1KYRGgzxJaVXg==",
+      "path": "amazon.lambda.apigatewayevents/3.0.0",
+      "hashPath": "amazon.lambda.apigatewayevents.3.0.0.nupkg.sha512"
+    },
+    "Amazon.Lambda.Core/3.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SjiyQaQuxNFmm41bzlPY9tJpnUA9Dxdx47U9rrBLmY2xBNz5/dAeOYNyKPvOWr/Oza/T+I1KYS+Q+2mL3dmoyQ==",
+      "path": "amazon.lambda.core/3.2.0",
+      "hashPath": "amazon.lambda.core.3.2.0.nupkg.sha512"
+    },
+    "Amazon.Lambda.Serialization.SystemTextJson/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8lKS2w8Ww+Kq41mRmedL3lYLVr+UE0tzN2FwOigxKe+hzDbWJIMXZwVHwf53RsdFsYZlaTmW4WHE56W/1Fk3Hg==",
+      "path": "amazon.lambda.serialization.systemtextjson/3.0.0",
+      "hashPath": "amazon.lambda.serialization.systemtextjson.3.0.0.nupkg.sha512"
+    },
+    "Amazon.Lambda.SQSEvents/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-a1xaCIuXDleJ8iRE3vHWWhtPqUiURmoQUS68INMEQmtfHr4wTz837TQZONo4cyubv5sZj78DDrYessZEzgFRGQ==",
+      "path": "amazon.lambda.sqsevents/2.1.0",
+      "hashPath": "amazon.lambda.sqsevents.2.1.0.nupkg.sha512"
+    },
+    "AspectInjector/2.8.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8BScDeaLazJVFaa2Tt9hoWLhllnxXP3Sew+l/vktdZEcgoPOsqhlDqe6GXJvy7xVkdICAbKFsrcDJ0cfrDR6Mg==",
+      "path": "aspectinjector/2.8.1",
+      "hashPath": "aspectinjector.2.8.1.nupkg.sha512"
+    },
+    "AWS.Lambda.Powertools.Logging/3.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VZ2o/8cVtuo+1LaTORo62LEOx87SeRE+VAu2VRsg2AWdT3Wx4c+WSRnhWB1yP6jnvMzvy2FKjWQ5BU+dSoWY3A==",
+      "path": "aws.lambda.powertools.logging/3.2.2",
+      "hashPath": "aws.lambda.powertools.logging.3.2.2.nupkg.sha512"
+    },
+    "AWS.Lambda.Powertools.Metrics/3.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6YJKF3fs4OCzsE/eaJNXwgcj7GMHuAczCcXd11HIjYRoXTKd/0ubcOQ3mFOQDqkqzwW/fMWBucm1JUvzyBRzTA==",
+      "path": "aws.lambda.powertools.metrics/3.2.2",
+      "hashPath": "aws.lambda.powertools.metrics.3.2.2.nupkg.sha512"
+    },
+    "AWS.Lambda.Powertools.Tracing/3.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RiATfbisiVTzxnXCTFuaOPFqzVP/Bf5jTVJ1PmjFCECPvO6FoLTMFoJGa7+Dsz5xpIzgFg+Ez3bo9IwLqrZwyQ==",
+      "path": "aws.lambda.powertools.tracing/3.2.2",
+      "hashPath": "aws.lambda.powertools.tracing.3.2.2.nupkg.sha512"
+    },
+    "AWSSDK.Core/4.0.3.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oB1rqOv3dh/rUkObmzhWmI/Dr9r2pECfznVYSy8b1gY5IR9zIgMF17mJwlIyO8zWz5qnGz4lZ1yQS0j/GSqivw==",
+      "path": "awssdk.core/4.0.3.5",
+      "hashPath": "awssdk.core.4.0.3.5.nupkg.sha512"
+    },
+    "AWSSDK.XRay/4.0.3.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yr1eGZ8dn3IJzsRlrNox8P05Tg8EvizipwEqLxDdZaEoWHW11m5OOqRdHTrSkeg1R0xyiWVAh7ML8w6JSThywA==",
+      "path": "awssdk.xray/4.0.3.7",
+      "hashPath": "awssdk.xray.4.0.3.7.nupkg.sha512"
+    },
+    "AWSXRayRecorder.Core/2.15.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-umkJQW57XjLMHnLIOzTAGVHehiPVqAguMnrH45m/ndcOIrOkoUThYf8P1+Iv6Ckb18pmWXSUoF7PqgKmTXkejQ==",
+      "path": "awsxrayrecorder.core/2.15.0",
+      "hashPath": "awsxrayrecorder.core.2.15.0.nupkg.sha512"
+    },
+    "AWSXRayRecorder.Handlers.AwsSdk/2.13.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R6w1bZOa6Ri/1FB+0bYvRLQbTMq2pj9dpM9zsi283y/7jyfdEnU5QVJVBx2eR27lo3poQKXGuUx5thP5aUmNvQ==",
+      "path": "awsxrayrecorder.handlers.awssdk/2.13.0",
+      "hashPath": "awsxrayrecorder.handlers.awssdk.2.13.0.nupkg.sha512"
+    }
+  }
+}
