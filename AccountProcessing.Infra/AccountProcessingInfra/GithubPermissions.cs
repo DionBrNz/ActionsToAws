@@ -53,7 +53,7 @@ public class GithubPermissions : Stack
                             new PolicyStatement(new PolicyStatementProps
                             {
                                 Effect = Effect.ALLOW,
-                                Actions = ["sts:AssumeRoleWithWebIdentity"],
+                                Actions = ["sts:AssumeRole"],
                                 Resources =  ["*"]
                             })
                         ]
