@@ -30,6 +30,7 @@ public static class DynamoDb
         {
             try
             {
+                Logger.LogInformation("About to save");
                 await context.SaveAsync(entity);
                 return new Unit();
             }

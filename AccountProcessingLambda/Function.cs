@@ -41,6 +41,7 @@ Validation<BookTransfer> ParseRequest(string input)
 [Logging(LogEvent = true, Service = "AccountProcessing", LogLevel = LogLevel.Information)]
 async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILambdaContext context)
 {
+    context.Logger.LogInformation("Started");
     var parsed = ParseRequest(request.Body);
 
     var result = await parsed.Match<Task<APIGatewayProxyResponse>>(
@@ -71,6 +72,7 @@ async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILam
                         Success: _ => Ok())));
         });
 
+    context.Logger.LogInformation($"Returning {result}");
     return result;
 }
 
