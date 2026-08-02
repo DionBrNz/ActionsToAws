@@ -16,82 +16,96 @@ using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Unit = System.ValueTuple;
 
 
-IDynamoDBContext dynamoDbContext = new DynamoDBContextBuilder().WithDynamoDBClient(() => new AmazonDynamoDBClient()).Build();
-
-Validator<BookTransfer> validate = AccountProcessingLambda.Validation.DateNotPast(() => DateTime.UtcNow);
-// Bind the context to produce a functional save function specific to BookTransfer
-var accountsTableName = Environment.GetEnvironmentVariable("ACCOUNTS_TABLE_NAME");
-Func<BookTransfer, Task<Exceptional<Unit>>> save = string.IsNullOrEmpty(accountsTableName)
-    ? dynamoDbContext.WithContext<BookTransfer>()
-    : dynamoDbContext.WithContext<BookTransfer>(accountsTableName);
-
-Validation<BookTransfer> ParseRequest(string input)
-{
-    try
-    {
-        var result = JsonSerializer.Deserialize<BookTransfer>(input);
-        if (result is null)
-            return Invalid<BookTransfer>("Request body could not be parsed as BookTransfer");
-
-        // Use the functional smart constructor to validate required fields
-        return MakeTransfer.CreateFrom(result);
-    }
-    catch (Exception ex)
-    {
-        return Invalid<BookTransfer>(ex.Message);
-    }
-}
-
-// The function handler that will be called for each Lambda event
-[Logging(LogEvent = true, Service = "AccountProcessing", LogLevel = LogLevel.Information)]
-async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILambdaContext context)
-{
-    context.Logger.LogInformation("Started");
-    var parsed = ParseRequest(request.Body);
-
-    var result = await parsed.Match<Task<APIGatewayProxyResponse>>(
-        Invalid: errs =>
-        {
-            // Log parse errors via Lambda Powertools logger
-            context.Logger.LogError($"Request parse failed: {string.Join(", ", errs.Select(e => e.Message))}");
-            return Task.FromResult(BadRequest(errs));
-        },
-        Valid: async command =>
-        {
-            return await validate(command)
-                .MapAsync(save)
-                .MatchAsync(
-                    Invalid: errs =>
-                    {
-                        // Log validation failures via Lambda Powertools logger
-                        context.Logger.LogWarning($"Validation failed: {string.Join(", ", errs.Select(e => e.Message))}");
-                        return BadRequest(errs);
-                    },
-                    Valid: r => Task.FromResult(r.Match<APIGatewayProxyResponse>(
-                        Exception: ex =>
-                        {
-                            // Log persistence exceptions via Lambda Powertools logger
-                            context.Logger.LogError($"Save failed: {ex}");
-                            return InternalServerError(Errors.UnexpectedError);
-                        },
-                        Success: _ => Ok())));
-        });
-
-    context.Logger.LogInformation($"Returning {result}");
-    Logger.FlushBuffer();
-    return result;
-}
-
-
-
-
 // Build the Lambda runtime client passing in the handler to call for each
 // event and the JSON serializer to use for translating Lambda JSON documents
-// to .NET types.
-await LambdaBootstrapBuilder.Create((Func<APIGatewayProxyRequest, ILambdaContext, Task<APIGatewayProxyResponse>>
-        ?)Handler, new DefaultLambdaJsonSerializer())
+// to .NET types. Instantiate the handler with its dependencies here (not at file scope).
+var dynamoDbContext = new DynamoDBContextBuilder()
+    .WithDynamoDBClient(() => new AmazonDynamoDBClient())
+    .Build();
+
+var accountsTableName = Environment.GetEnvironmentVariable("ACCOUNTS_TABLE_NAME");
+var handlerInstance = new TransferHandler(dynamoDbContext, accountsTableName, () => DateTime.UtcNow);
+
+await LambdaBootstrapBuilder.Create((Func<APIGatewayProxyRequest, ILambdaContext, Task<APIGatewayProxyResponse>>)handlerInstance.Handle, new DefaultLambdaJsonSerializer())
         .Build()
         .RunAsync();
+
+
+// Encapsulate handler dependencies so they can be injected rather than created at file scope
+internal sealed class TransferHandler
+{
+    private readonly IDynamoDBContext _dynamoDbContext;
+    private readonly Func<DateTime> _clock;
+    private readonly Func<BookTransfer, Task<Exceptional<Unit>>> _save;
+
+    public TransferHandler(IDynamoDBContext dynamoDbContext, string? accountsTableName, Func<DateTime> clock)
+    {
+        _dynamoDbContext = dynamoDbContext ?? throw new ArgumentNullException(nameof(dynamoDbContext));
+        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+
+        _save = string.IsNullOrEmpty(accountsTableName)
+            ? _dynamoDbContext.WithContext<BookTransfer>()
+            : _dynamoDbContext.WithContext<BookTransfer>(accountsTableName);
+    }
+
+    private Validation<BookTransfer> ParseRequest(string input)
+    {
+        try
+        {
+            var result = JsonSerializer.Deserialize<BookTransfer>(input);
+            if (result is null)
+                return Invalid<BookTransfer>("Request body could not be parsed as BookTransfer");
+
+            // Use the functional smart constructor to validate required fields
+            return MakeTransfer.CreateFrom(result);
+        }
+        catch (Exception ex)
+        {
+            return Invalid<BookTransfer>(ex.Message);
+        }
+    }
+
+    [Logging(LogEvent = true, Service = "AccountProcessing", LogLevel = LogLevel.Information)]
+    public async Task<APIGatewayProxyResponse> Handle(APIGatewayProxyRequest request, ILambdaContext context)
+    {
+        context.Logger.LogInformation("Started");
+        var validate = AccountProcessingLambda.Validation.DateNotPast(_clock);
+
+        var parsed = ParseRequest(request.Body);
+
+        var result = await parsed.Match<Task<APIGatewayProxyResponse>>(
+            Invalid: errs =>
+            {
+                // Log parse errors via Lambda Powertools logger
+                context.Logger.LogError($"Request parse failed: {string.Join(", ", errs.Select(e => e.Message))}");
+                return Task.FromResult(BadRequest(errs));
+            },
+            Valid: async command =>
+            {
+                return await validate(command)
+                    .MapAsync(_save)
+                    .MatchAsync(
+                        Invalid: errs =>
+                        {
+                            // Log validation failures via Lambda Powertools logger
+                            context.Logger.LogWarning($"Validation failed: {string.Join(", ", errs.Select(e => e.Message))}");
+                            return BadRequest(errs);
+                        },
+                        Valid: r => Task.FromResult(r.Match<APIGatewayProxyResponse>(
+                            Exception: ex =>
+                            {
+                                // Log persistence exceptions via Lambda Powertools logger
+                                context.Logger.LogError($"Save failed: {ex}");
+                                return InternalServerError(Errors.UnexpectedError);
+                            },
+                            Success: _ => Ok())));
+            });
+
+        context.Logger.LogInformation($"Returning {result}");
+        Logger.FlushBuffer();
+        return result;
+    }
+}
 
 
 
