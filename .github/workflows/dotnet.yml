@@ -32,6 +32,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10.0.x
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24
     - name: Install CDK
       run: npm install -g aws-cdk
     - name: Restore dependencies
