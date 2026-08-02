@@ -10,7 +10,6 @@ using AWS.Lambda.Powertools.Logging;
 using Functional;
 using static Functional.F;
 using System.Text.Json;
-using System;
 using static ActionResultFactory;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Unit = System.ValueTuple;
@@ -23,8 +22,7 @@ var dynamoDbContext = new DynamoDBContextBuilder()
     .WithDynamoDBClient(() => new AmazonDynamoDBClient())
     .Build();
 
-var accountsTableName = Environment.GetEnvironmentVariable("ACCOUNTS_TABLE_NAME");
-var handlerInstance = new TransferHandler(dynamoDbContext, accountsTableName, () => DateTime.UtcNow);
+var handlerInstance = new TransferHandler(dynamoDbContext, () => Environment.GetEnvironmentVariable("ACCOUNTS_TABLE_NAME"), () => DateTime.UtcNow);
 
 await LambdaBootstrapBuilder.Create((Func<APIGatewayProxyRequest, ILambdaContext, Task<APIGatewayProxyResponse>>)handlerInstance.Handle, new DefaultLambdaJsonSerializer())
         .Build()
@@ -36,16 +34,13 @@ internal sealed class TransferHandler
 {
     private readonly IDynamoDBContext _dynamoDbContext;
     private readonly Func<DateTime> _clock;
-    private readonly Func<BookTransfer, Task<Exceptional<Unit>>> _save;
+    private readonly Func<string?> _accountsTableNameProvider;
 
-    public TransferHandler(IDynamoDBContext dynamoDbContext, string? accountsTableName, Func<DateTime> clock)
+    public TransferHandler(IDynamoDBContext dynamoDbContext, Func<string?> accountsTableNameProvider, Func<DateTime> clock)
     {
         _dynamoDbContext = dynamoDbContext ?? throw new ArgumentNullException(nameof(dynamoDbContext));
+        _accountsTableNameProvider = accountsTableNameProvider ?? throw new ArgumentNullException(nameof(accountsTableNameProvider));
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
-
-        _save = string.IsNullOrEmpty(accountsTableName)
-            ? _dynamoDbContext.WithContext<BookTransfer>()
-            : _dynamoDbContext.WithContext<BookTransfer>(accountsTableName);
     }
 
     private Validation<BookTransfer> ParseRequest(string input)
@@ -71,6 +66,12 @@ internal sealed class TransferHandler
         context.Logger.LogInformation("Started");
         var validate = AccountProcessingLambda.Validation.DateNotPast(_clock);
 
+        // Delay reading configuration and binding the save function until request time
+        var accountsTableName = _accountsTableNameProvider();
+        var save = string.IsNullOrEmpty(accountsTableName)
+            ? _dynamoDbContext.WithContext<BookTransfer>()
+            : _dynamoDbContext.WithContext<BookTransfer>(accountsTableName);
+
         var parsed = ParseRequest(request.Body);
 
         var result = await parsed.Match<Task<APIGatewayProxyResponse>>(
@@ -83,7 +84,7 @@ internal sealed class TransferHandler
             Valid: async command =>
             {
                 return await validate(command)
-                    .MapAsync(_save)
+                    .MapAsync(save)
                     .MatchAsync(
                         Invalid: errs =>
                         {
