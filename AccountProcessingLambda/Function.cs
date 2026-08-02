@@ -8,32 +8,32 @@ using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using AWS.Lambda.Powertools.Logging;
 using Functional;
-using System.Linq;
+using static Functional.F;
 using System.Text.Json;
-using System.Xml.Schema;
 using static ActionResultFactory;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Unit = System.ValueTuple;
 
 
-IDynamoDBContext context = new DynamoDBContextBuilder().WithDynamoDBClient(() => new AmazonDynamoDBClient()).Build();
+IDynamoDBContext dynamoDbContext = new DynamoDBContextBuilder().WithDynamoDBClient(() => new AmazonDynamoDBClient()).Build();
 
 Validator<BookTransfer> validate = AccountProcessingLambda.Validation.DateNotPast(() => DateTime.UtcNow);
-Func<BookTransfer, Task<Exceptional<Unit>>> save = command => DynamoDb.TryExecute(context, command);
+Func<BookTransfer, Task<Exceptional<Unit>>> save = command => DynamoDb.TryExecute(dynamoDbContext, command);
 
-Exceptional<BookTransfer> ParseRequest(string input)
+Validation<BookTransfer> ParseRequest(string input)
 {
     try
     {
         var result = JsonSerializer.Deserialize<BookTransfer>(input);
         if (result is null)
-            return new Exception("Request body could not be parsed as BookTransfer");
+            return Invalid<BookTransfer>("Request body could not be parsed as BookTransfer");
 
-        return Exceptional.Of<BookTransfer>(result);
+        // Use the functional smart constructor to validate required fields
+        return MakeTransfer.CreateFrom(result);
     }
     catch (Exception ex)
     {
-        return Exceptional.Of<BookTransfer>(ex);
+        return Invalid<BookTransfer>(ex.Message);
     }
 }
 
@@ -44,13 +44,13 @@ async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILam
     var parsed = ParseRequest(request.Body);
 
     var result = await parsed.Match<Task<APIGatewayProxyResponse>>(
-        Exception: ex =>
+        Invalid: errs =>
         {
             // Log parse errors via Lambda Powertools logger
-            context.Logger.LogError($"Request parse failed: {ex}");
-            return Task.FromResult(BadRequest(new { Message = ex.Message }));
+            context.Logger.LogError($"Request parse failed: {string.Join(", ", errs.Select(e => e.Message))}");
+            return Task.FromResult(BadRequest(errs));
         },
-        Success: async command =>
+        Valid: async command =>
         {
             return await validate(command)
                 .MapAsync(save)
