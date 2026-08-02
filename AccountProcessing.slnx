@@ -6,4 +6,5 @@
   <Project Path="AccountProcessing.Infra/AccountProcessingInfra/AccountProcessingInfra.csproj" />
   <Project Path="AccountProcessingLambda/AccountProcessingLambda.csproj" />
   <Project Path="Functional/Functional.csproj" Id="cba3bc42-0f18-40ff-b1a6-480049f930d8" />
+  <Project Path="Tests/AccountProcessingLambda.Tests/AccountProcessingLambda.Tests.csproj" />
 </Solution>

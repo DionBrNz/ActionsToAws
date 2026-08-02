@@ -42,8 +42,26 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore --configuration Release
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Test (with coverage)
+      run: |
+        # Run tests and collect code coverage (XPlat collector produces cobertura xml)
+        dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -r TestResults
+
+    - name: Install ReportGenerator
+      run: |
+        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.29
+        echo "Adding dotnet tools to PATH"
+        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Generate HTML coverage report
+      run: |
+        reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"TestResults/CoverageReport" -reporttypes:Html
+
+    - name: Upload coverage HTML
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-html
+        path: TestResults/CoverageReport
     - name: Deploy
       run:  cdk deploy AccountProcessingInfraStack --require-approval never
 
