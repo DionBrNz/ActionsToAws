@@ -47,7 +47,7 @@ async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILam
         Exception: ex =>
         {
             // Log parse errors via Lambda Powertools logger
-            Logger.LogError($"Request parse failed: {ex}");
+            context.Logger.LogError($"Request parse failed: {ex}");
             return Task.FromResult(BadRequest(new { Message = ex.Message }));
         },
         Success: async command =>
@@ -58,14 +58,14 @@ async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILam
                     Invalid: errs =>
                     {
                         // Log validation failures via Lambda Powertools logger
-                        Logger.LogWarning($"Validation failed: {string.Join(", ", errs.Select(e => e.Message))}");
+                        context.Logger.LogWarning($"Validation failed: {string.Join(", ", errs.Select(e => e.Message))}");
                         return BadRequest(errs);
                     },
                     Valid: r => Task.FromResult(r.Match<APIGatewayProxyResponse>(
                         Exception: ex =>
                         {
                             // Log persistence exceptions via Lambda Powertools logger
-                            Logger.LogError($"Save failed: {ex}");
+                            context.Logger.LogError($"Save failed: {ex}");
                             return InternalServerError(Errors.UnexpectedError);
                         },
                         Success: _ => Ok())));

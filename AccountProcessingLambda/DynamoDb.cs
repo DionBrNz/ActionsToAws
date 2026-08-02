@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using AWS.Lambda.Powertools.Logging;
 using Functional;
 using Unit = System.ValueTuple;
 
@@ -34,6 +35,7 @@ public static class DynamoDb
             }
             catch (Exception ex)
             {
+                Logger.LogError(ex, "error");
                 return ex;
             }
         };
