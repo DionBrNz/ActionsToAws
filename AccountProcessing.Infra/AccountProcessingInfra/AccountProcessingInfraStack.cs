@@ -23,10 +23,10 @@ namespace AccountProcessingInfra
             });
 
             // Define the Lambda function
-            var function = new Function(this, "UpperCase", new FunctionProps
+            var function = new Function(this, "ProcessTransfer", new FunctionProps
             {
                 Handler = "AccountProcessingLambda", 
-                FunctionName = "UpperCase",
+                FunctionName = "ProcessTransfer",
                 Runtime = Runtime.DOTNET_10,
                 Architecture = Architecture.ARM_64,
                 Code = Code.FromAsset("AccountProcessingLambda/bin/Release/net10.0"),

@@ -1,0 +1,12 @@
+POST https://kgxupsvku0.execute-api.ap-southeast-2.amazonaws.com/prod/process
+Content-Type: application/json
+
+{
+  "DebitedAccountId": "F78EFE64-DBC6-46F5-A8AB-E26C612CF4E4",
+  "Beneficiary": "Me",
+  "Iban": "DABF7DFA-A462-4D41-89D2-9B83FD5913AC",
+  "Bic": "E213F36B-6258-40CD-A6C9-D883560AF72B",
+  "Date": "2026-08-03",
+  "Amount": 26.0,
+  "Reference": "Test"
+}

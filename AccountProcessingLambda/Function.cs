@@ -8,6 +8,7 @@ using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using AWS.Lambda.Powertools.Logging;
 using Functional;
+using System.Linq;
 using System.Text.Json;
 using System.Xml.Schema;
 using static ActionResultFactory;
@@ -43,15 +44,30 @@ async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILam
     var parsed = ParseRequest(request.Body);
 
     var result = await parsed.Match<Task<APIGatewayProxyResponse>>(
-        Exception: ex => Task.FromResult(BadRequest(new { Message = ex.Message })),
+        Exception: ex =>
+        {
+            // Log parse errors via Lambda Powertools logger
+            Logger.LogError($"Request parse failed: {ex}");
+            return Task.FromResult(BadRequest(new { Message = ex.Message }));
+        },
         Success: async command =>
         {
             return await validate(command)
                 .MapAsync(save)
                 .MatchAsync(
-                    Invalid: BadRequest,
+                    Invalid: errs =>
+                    {
+                        // Log validation failures via Lambda Powertools logger
+                        Logger.LogWarning($"Validation failed: {string.Join(", ", errs.Select(e => e.Message))}");
+                        return BadRequest(errs);
+                    },
                     Valid: r => Task.FromResult(r.Match<APIGatewayProxyResponse>(
-                        Exception: _ => InternalServerError(Errors.UnexpectedError),
+                        Exception: ex =>
+                        {
+                            // Log persistence exceptions via Lambda Powertools logger
+                            Logger.LogError($"Save failed: {ex}");
+                            return InternalServerError(Errors.UnexpectedError);
+                        },
                         Success: _ => Ok())));
         });
 
