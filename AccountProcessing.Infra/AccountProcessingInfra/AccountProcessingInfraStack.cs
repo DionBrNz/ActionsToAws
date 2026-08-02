@@ -30,7 +30,7 @@ namespace AccountProcessingInfra
                 Runtime = Runtime.DOTNET_10,
                 Architecture = Architecture.ARM_64,
                 Code = Code.FromAsset("AccountProcessingLambda/bin/Release/net10.0"),
-                Timeout = Duration.Seconds(10),
+                Timeout = Duration.Seconds(29),
                 LoggingFormat = LoggingFormat.JSON
             });
             // Explicitly define the log group for the Lambda function
