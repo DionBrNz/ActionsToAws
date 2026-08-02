@@ -31,7 +31,7 @@ namespace AccountProcessingInfra
                 Architecture = Architecture.ARM_64,
                 Code = Code.FromAsset("AccountProcessingLambda/bin/Release/net10.0"),
                 Timeout = Duration.Seconds(29),
-                LoggingFormat = LoggingFormat.JSON
+                LoggingFormat = LoggingFormat.TEXT
             });
             // Explicitly define the log group for the Lambda function
             var logGroup = new LogGroup(this, "UpperCaseLogGroup", new LogGroupProps

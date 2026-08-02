@@ -74,6 +74,7 @@ async Task<APIGatewayProxyResponse> Handler(APIGatewayProxyRequest request, ILam
         });
 
     context.Logger.LogInformation($"Returning {result}");
+    Logger.FlushBuffer();
     return result;
 }
 
