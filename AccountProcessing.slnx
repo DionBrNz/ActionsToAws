@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".github/workflows/dotnet.yml" />
+    <File Path="Rest.http" />
   </Folder>
   <Project Path="AccountProcessing.Infra/AccountProcessingInfra/AccountProcessingInfra.csproj" />
   <Project Path="AccountProcessingLambda/AccountProcessingLambda.csproj" />

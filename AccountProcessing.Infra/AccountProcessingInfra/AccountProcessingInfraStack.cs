@@ -16,7 +16,7 @@ namespace AccountProcessingInfra
                 BillingMode = BillingMode.PAY_PER_REQUEST,
                 PartitionKey = new Attribute
                 {
-                    Name = "AccountId",
+                    Name = "DebitedAccountId",
                     Type = AttributeType.STRING
                 }
 
