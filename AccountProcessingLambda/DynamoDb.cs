@@ -1,6 +1,7 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 using AWS.Lambda.Powertools.Logging;
 using Functional;
+using System.Threading;
 using Unit = System.ValueTuple;
 
 
@@ -14,8 +15,7 @@ public static class DynamoDb
         {
             try
             {
-
-               await client.LoadAsync(key);
+               await client.LoadAsync(key).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -32,7 +32,7 @@ public static class DynamoDb
         try
         {
             Logger.LogInformation("About to save");
-            await context.SaveAsync(entity).ConfigureAwait(false);
+            await context.SaveAsync(entity, CancellationToken.None).ConfigureAwait(false);
             return new Unit();
         }
         catch (Exception ex)
@@ -51,7 +51,7 @@ public static class DynamoDb
             // apply timestamp immutably using the domain Command helper
             var toSave = entity.WithTimestamp<T>(DateTime.UtcNow);
             var config = new DynamoDBOperationConfig { OverrideTableName = tableName };
-            await context.SaveAsync(toSave, config).ConfigureAwait(false);
+            await context.SaveAsync(toSave, config, CancellationToken.None).ConfigureAwait(false);
             return new Unit();
         }
         catch (Exception ex)

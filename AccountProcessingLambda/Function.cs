@@ -30,8 +30,10 @@ await LambdaBootstrapBuilder.Create((Func<APIGatewayProxyRequest, ILambdaContext
 
 
 // Encapsulate handler dependencies so they can be injected rather than created at file scope
-internal sealed class TransferHandler
+namespace AccountProcessingLambda
 {
+    public sealed class TransferHandler
+    {
     private readonly IDynamoDBContext _dynamoDbContext;
     private readonly Func<DateTime> _clock;
     private readonly Func<string?> _accountsTableNameProvider;
@@ -105,6 +107,7 @@ internal sealed class TransferHandler
         context.Logger.LogInformation($"Returning {result}");
         Logger.FlushBuffer();
         return result;
+    }
     }
 }
 
