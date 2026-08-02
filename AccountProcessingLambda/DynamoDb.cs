@@ -42,9 +42,32 @@ public static class DynamoDb
         }
     }
 
+    public static async Task<Exceptional<Unit>> TryExecuteWithTable<T>(IDynamoDBContext context, T entity, string tableName)
+        where T : Command
+    {
+        try
+        {
+            Logger.LogInformation("About to save to table {Table}", tableName);
+            // apply timestamp immutably using the domain Command helper
+            var toSave = entity.WithTimestamp<T>(DateTime.UtcNow);
+            var config = new DynamoDBOperationConfig { OverrideTableName = tableName };
+            await context.SaveAsync(toSave, config).ConfigureAwait(false);
+            return new Unit();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "error");
+            return ex;
+        }
+    }
+
     // Functional helper: bind a concrete IDynamoDBContext to produce a function that
     // saves entities of type T. This lets callers compose the save function in a
     // functional / curried style: var save = dbContext.WithContext<BookTransfer>();
     public static Func<T, Task<Exceptional<Unit>>> WithContext<T>(this IDynamoDBContext context)
         => entity => TryExecute(context, entity);
+
+    public static Func<T, Task<Exceptional<Unit>>> WithContext<T>(this IDynamoDBContext context, string tableName)
+        where T : Command
+        => entity => TryExecuteWithTable(context, entity, tableName);
 }

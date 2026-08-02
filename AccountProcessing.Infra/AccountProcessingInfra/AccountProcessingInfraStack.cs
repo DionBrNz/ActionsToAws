@@ -43,6 +43,8 @@ namespace AccountProcessingInfra
 
             logGroup.GrantWrite(function);
             accountTable.GrantReadWriteData(function);
+            // Pass the created table name to the Lambda so it can use the correct physical name
+            function.AddEnvironment("ACCOUNTS_TABLE_NAME", accountTable.TableName);
 
             // Define the API Gateway
             var api = new RestApi(this, "MyApiGateway", new RestApiProps

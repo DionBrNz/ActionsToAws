@@ -10,6 +10,7 @@ using AWS.Lambda.Powertools.Logging;
 using Functional;
 using static Functional.F;
 using System.Text.Json;
+using System;
 using static ActionResultFactory;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Unit = System.ValueTuple;
@@ -19,7 +20,10 @@ IDynamoDBContext dynamoDbContext = new DynamoDBContextBuilder().WithDynamoDBClie
 
 Validator<BookTransfer> validate = AccountProcessingLambda.Validation.DateNotPast(() => DateTime.UtcNow);
 // Bind the context to produce a functional save function specific to BookTransfer
-Func<BookTransfer, Task<Exceptional<Unit>>> save = dynamoDbContext.WithContext<BookTransfer>();
+var accountsTableName = Environment.GetEnvironmentVariable("ACCOUNTS_TABLE_NAME");
+Func<BookTransfer, Task<Exceptional<Unit>>> save = string.IsNullOrEmpty(accountsTableName)
+    ? dynamoDbContext.WithContext<BookTransfer>()
+    : dynamoDbContext.WithContext<BookTransfer>(accountsTableName);
 
 Validation<BookTransfer> ParseRequest(string input)
 {

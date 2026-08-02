@@ -1,6 +1,29 @@
 {
  "Resources": {
-  "UpperCaseServiceRole3924BBF3": {
+  "AccountsTable81C15AE5": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "DebitedAccountId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "DebitedAccountId",
+      "KeyType": "HASH"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "AccountProcessingInfraStack/AccountsTable/Resource"
+   }
+  },
+  "ProcessTransferServiceRoleDE9FD4F8": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -31,10 +54,10 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AccountProcessingInfraStack/UpperCase/ServiceRole/Resource"
+    "aws:cdk:path": "AccountProcessingInfraStack/ProcessTransfer/ServiceRole/Resource"
    }
   },
-  "UpperCaseServiceRoleDefaultPolicyE1F4A6AE": {
+  "ProcessTransferServiceRoleDefaultPolicy43FCE7CF": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
@@ -51,22 +74,45 @@
          "Arn"
         ]
        }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "AccountsTable81C15AE5",
+         "Arn"
+        ]
+       }
       }
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "UpperCaseServiceRoleDefaultPolicyE1F4A6AE",
+    "PolicyName": "ProcessTransferServiceRoleDefaultPolicy43FCE7CF",
     "Roles": [
      {
-      "Ref": "UpperCaseServiceRole3924BBF3"
+      "Ref": "ProcessTransferServiceRoleDE9FD4F8"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AccountProcessingInfraStack/UpperCase/ServiceRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "AccountProcessingInfraStack/ProcessTransfer/ServiceRole/DefaultPolicy/Resource"
    }
   },
-  "UpperCase554A623D": {
+  "ProcessTransfer7A5113B6": {
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Architectures": [
@@ -76,34 +122,41 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "a9b0a6de9efdcd0272593e8dac8e447a6c4b274eac53798cea019a4dad8c88b5.zip"
+     "S3Key": "af569db5beb0c4663923e65e8f2f7901dbf0d60c057145c03123186c490bf63c.zip"
     },
-    "FunctionName": "UpperCase",
-    "Handler": "UpperCase::UpperCase.Function::FunctionHandler",
+    "Environment": {
+     "Variables": {
+      "ACCOUNTS_TABLE_NAME": {
+       "Ref": "AccountsTable81C15AE5"
+      }
+     }
+    },
+    "FunctionName": "ProcessTransfer",
+    "Handler": "AccountProcessingLambda",
     "LoggingConfig": {
-     "LogFormat": "JSON"
+     "LogFormat": "Text"
     },
     "Role": {
      "Fn::GetAtt": [
-      "UpperCaseServiceRole3924BBF3",
+      "ProcessTransferServiceRoleDE9FD4F8",
       "Arn"
      ]
     },
     "Runtime": "dotnet10",
-    "Timeout": 10
+    "Timeout": 29
    },
    "DependsOn": [
-    "UpperCaseServiceRoleDefaultPolicyE1F4A6AE",
-    "UpperCaseServiceRole3924BBF3"
+    "ProcessTransferServiceRoleDefaultPolicy43FCE7CF",
+    "ProcessTransferServiceRoleDE9FD4F8"
    ],
    "Metadata": {
-    "aws:cdk:path": "AccountProcessingInfraStack/UpperCase/Resource",
-    "aws:asset:path": "asset.a9b0a6de9efdcd0272593e8dac8e447a6c4b274eac53798cea019a4dad8c88b5.0",
+    "aws:cdk:path": "AccountProcessingInfraStack/ProcessTransfer/Resource",
+    "aws:asset:path": "asset.af569db5beb0c4663923e65e8f2f7901dbf0d60c057145c03123186c490bf63c.0",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
   },
-  "UpperCaseLogGroup89553452": {
+  "ProcessTransferLogGroupE3915B02": {
    "Type": "AWS::Logs::LogGroup",
    "Properties": {
     "LogGroupName": {
@@ -112,7 +165,7 @@
       [
        "/aws/lambda/",
        {
-        "Ref": "UpperCase554A623D"
+        "Ref": "ProcessTransfer7A5113B6"
        }
       ]
      ]
@@ -122,7 +175,7 @@
    "UpdateReplacePolicy": "Retain",
    "DeletionPolicy": "Retain",
    "Metadata": {
-    "aws:cdk:path": "AccountProcessingInfraStack/UpperCase/LogGroup/Resource"
+    "aws:cdk:path": "AccountProcessingInfraStack/ProcessTransfer/LogGroup/Resource"
    }
   },
   "UpperCaseLogGroup69847035": {
@@ -147,7 +200,7 @@
     "aws:cdk:path": "AccountProcessingInfraStack/MyApiGateway/Resource"
    }
   },
-  "MyApiGatewayDeployment44AAC031886df55ce95877d884d4e624ffca078d": {
+  "MyApiGatewayDeployment44AAC031423f0a0344c9ba5fe0298955e16ed9a1": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "Description": "API Gateway for Account Processing",
@@ -168,7 +221,7 @@
    "Type": "AWS::ApiGateway::Stage",
    "Properties": {
     "DeploymentId": {
-     "Ref": "MyApiGatewayDeployment44AAC031886df55ce95877d884d4e624ffca078d"
+     "Ref": "MyApiGatewayDeployment44AAC031423f0a0344c9ba5fe0298955e16ed9a1"
     },
     "RestApiId": {
      "Ref": "MyApiGateway04A753E5"
@@ -203,7 +256,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "UpperCase554A623D",
+      "ProcessTransfer7A5113B6",
       "Arn"
      ]
     },
@@ -247,7 +300,7 @@
     "Action": "lambda:InvokeFunction",
     "FunctionName": {
      "Fn::GetAtt": [
-      "UpperCase554A623D",
+      "ProcessTransfer7A5113B6",
       "Arn"
      ]
     },
@@ -304,7 +357,7 @@
         ":lambda:path/2015-03-31/functions/",
         {
          "Fn::GetAtt": [
-          "UpperCase554A623D",
+          "ProcessTransfer7A5113B6",
           "Arn"
          ]
         },
@@ -327,7 +380,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/4VUTU/jMBD9LfiIXNOCxKHSHlpYVqzYUrWIS4TQYA+pl8S27AmosvLfV3Y+WgTSnuy89+bNeMbOuTi/PBfTE/gIE6neJpV+EXFLIN84fITnWEH9okDEm8ZI0tYUkUmrkM3ZKeNsB0ZV6Psv3xjS9cCBlztNKKnxA/Tam6xgVFW2LLUpb6yvgdic/d7erxhnycc2lEXtE796NUMBab9GX+sQtDUt11CLuLEVFpFBCE2Narln88ic10ZqB9VCStsYGsrKmhSwyH5dCs5qMFCiWttKS42BzYv4CdsvfK99anlkoNSDXQ8pOkWK6VkikLtbU2mDI8dO2X/IfNBUGu/whI4BDzYxX3y+wkptCQhrNBT6krJx59nycPEMISAFsUgLDxdi2cg3pCUEzDa8smUQ8c6Wv7xtXBHTmPJ2nFzK9AXkzGNt3w/9YAoDebvPDKHpGj7r6hnsWw5Ol0D4AXsRNxho4XQRU6z02o1DSh6ZOxTRNaxD+TW6yu7Tsb8NBqdHGwJtDvIwnihP9c6WWkJ1q47m+R2ekx9c+JagxJx6gI6KzCTfYLCNl3jo9IAUkTnwOF5TB7Rbg6fP58xS/gdpZ1URUz8yMrxGItdxPaANYenhqAk2dyQcuXYBbcvzZUhlalMm4r4h11DLry2tkM5mUzEVs+mZWP18uLIeF85NHtGnR/jj/VJMz2YiKaYnf4PWk/5XIDbd+g9Jq+EwZgQAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/41U30/bMBD+W/Dj5JoWJB4q7aFAmdCAdW03aYpQdbWP1COxI/sCq6z878hO0hbYr4fIznd33313PvtEnJydiOERPPuBVI+DQq9FWBDIRw7PfhXU1kBp1VqEJawLzAJb66LQJr+1CtmYzSY/VrPpfDWffv02XSwZZxU40qSt+YxbNg7MQBkdPzDOaFvF7YI1zT2/eDCJsuEFlGsFIlzVRsbALDDZssegDRhVoOv+XG1I7wjByY0mlFS7HnroSO72aQub59rkV9aVQGzMlviLohpdoq0pOTU8MFBqap60s6ZEQ2ycpeD2u28F9wrjfoau1N5raxquoRRhblN/wPu6RHWeiq+cNlJXUEyktLWhXnfyiQGTxNdpYCUYyFHNbKGlRs/GWXiFbSeu873vFC/trE/ResSYzkoEcnNtCm1wZ0u1/NP4d94/W1OTYlm8hVML+2RLGy3vNLyHlVoQEMZT8K/S/i+cZLQKGu5PV+A9kheTuHB/Ks5r+Yh0Dh5TUl7Y3ItwY/NPztZVFuLEpO1uiGKmdyBnDkv7tO8BU+jJ2W2yEJr2aEetnp6+4VDpHAifYSvCHD1NKp2FGCudrnbjEDmSbS+ibW+L8kusCruNZf82GCq9oyHQZu/uDyd+aW9sriUU1+rNCb/FU/I9C18Q5JhS99CByGTkc/S2dhL3ne6RLMR3AncXogLazMDR6zqTK79F2liVhdiPhPQPA1HV2jpAG8LcwUETbOqIP2BtA5pmryTpSqMRRWuTR7cvNVU1NfzS0h3S8WgohmI0PBZ30+WFdTipqsF3dPHyf3w6E8PjkYgew6OfXutB90aJebu+AHSz1QljBQAA"
    },
    "Metadata": {
     "aws:cdk:path": "AccountProcessingInfraStack/CDKMetadata/Default"

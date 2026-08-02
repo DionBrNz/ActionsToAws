@@ -19,7 +19,7 @@
    "UpdateReplacePolicy": "Delete",
    "DeletionPolicy": "Delete",
    "Metadata": {
-    "aws:cdk:path": "GitHubPermissions/GithubOidc/Resource/Default"
+    "aws:cdk:path": "GithubPermissions/GithubOidc/Resource/Default"
    }
   },
   "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": {
@@ -65,7 +65,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "GitHubPermissions/Custom::AWSCDKOpenIdConnectProviderCustomResourceProvider/Role"
+    "aws:cdk:path": "GithubPermissions/Custom::AWSCDKOpenIdConnectProviderCustomResourceProvider/Role"
    }
   },
   "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": {
@@ -92,7 +92,7 @@
     "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65"
    ],
    "Metadata": {
-    "aws:cdk:path": "GitHubPermissions/Custom::AWSCDKOpenIdConnectProviderCustomResourceProvider/Handler",
+    "aws:cdk:path": "GithubPermissions/Custom::AWSCDKOpenIdConnectProviderCustomResourceProvider/Handler",
     "aws:asset:path": "asset.c0d9f24649426c60a1bc01108070535a40353ae6cd8ceccb812969319b936e5d",
     "aws:asset:property": "Code"
    }
@@ -130,7 +130,7 @@
       "PolicyDocument": {
        "Statement": [
         {
-         "Action": "sts:AssumeRoleWithWebIdentity",
+         "Action": "sts:AssumeRole",
          "Effect": "Allow",
          "Resource": "*"
         }
@@ -142,7 +142,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "GitHubPermissions/GithubActionsRole/Resource"
+    "aws:cdk:path": "GithubPermissions/GithubActionsRole/Resource"
    }
   },
   "CDKMetadata": {
@@ -151,7 +151,7 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/12OMU/DMBCFf0s9Vo7rZOhQiSENDF1KlSKWCCHjXKujzjny2a1QlP+OQgoD09O9972nK1SxLpRemBtntr1kDj/UcIzGXqS58TuaTg3PPdCurTwR2HgI/oothGYQKTixEUshhXUIFHct/9zjm6y9g2YQhjl10G6/xGYQfUCy2BtXWusTxXt3ZqZCaSN6miekQHJIcPAOLcLfcHWiCR1llTj6rgb2KVhoxFLM4d34l/9+vTUMsmSGeIzmjHQe5aOPe4irXCutcr1S+6eXygco+z57hcDo6eG6VnqVq4nQi09GzEKiiB2oetZv7lxbS0YBAAA="
    },
    "Metadata": {
-    "aws:cdk:path": "GitHubPermissions/CDKMetadata/Default"
+    "aws:cdk:path": "GithubPermissions/CDKMetadata/Default"
    },
    "Condition": "CDKMetadataAvailable"
   }

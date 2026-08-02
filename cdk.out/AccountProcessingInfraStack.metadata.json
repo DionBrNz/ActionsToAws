@@ -8,7 +8,19 @@
       ]
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase": [
+  "/AccountProcessingInfraStack/AccountsTable": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "billingMode": "PAY_PER_REQUEST",
+        "partitionKey": {
+          "name": "*",
+          "type": "S"
+        }
+      }
+    }
+  ],
+  "/AccountProcessingInfraStack/ProcessTransfer": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
@@ -17,8 +29,18 @@
         "runtime": "*",
         "architecture": "*",
         "functionName": "*",
-        "loggingFormat": "JSON",
+        "loggingFormat": "Text",
         "timeout": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addEnvironment": [
+          "*",
+          "*",
+          "*"
+        ]
       }
     }
   ],
@@ -67,7 +89,26 @@
       ]
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/ServiceRole": [
+  "/AccountProcessingInfraStack/AccountsTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AccountsTable81C15AE5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, jsii runtime, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/AccountProcessingInfraStack/AccountsTable/ScalingRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/AccountProcessingInfraStack/ProcessTransfer/ServiceRole": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
@@ -105,12 +146,28 @@
           "*"
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/Resource": [
+  "/AccountProcessingInfraStack/ProcessTransfer/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "UpperCase554A623D"
+      "data": "ProcessTransfer7A5113B6"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -120,7 +177,7 @@
       ]
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/LogGroup": [
+  "/AccountProcessingInfraStack/ProcessTransfer/LogGroup": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
@@ -233,10 +290,10 @@
       ]
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/ServiceRole/Resource": [
+  "/AccountProcessingInfraStack/ProcessTransfer/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "UpperCaseServiceRole3924BBF3"
+      "data": "ProcessTransferServiceRoleDE9FD4F8"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -246,7 +303,7 @@
       ]
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/ServiceRole/DefaultPolicy": [
+  "/AccountProcessingInfraStack/ProcessTransfer/ServiceRole/DefaultPolicy": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": "*"
@@ -274,18 +331,34 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/Code/AssetBucket": [
+  "/AccountProcessingInfraStack/ProcessTransfer/Code/AssetBucket": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": "*"
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/LogGroup/Resource": [
+  "/AccountProcessingInfraStack/ProcessTransfer/LogGroup/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "UpperCaseLogGroup89553452"
+      "data": "ProcessTransferLogGroupE3915B02"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -298,7 +371,7 @@
   "/AccountProcessingInfraStack/MyApiGateway/Deployment/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "MyApiGatewayDeployment44AAC031886df55ce95877d884d4e624ffca078d"
+      "data": "MyApiGatewayDeployment44AAC031423f0a0344c9ba5fe0298955e16ed9a1"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -330,10 +403,10 @@
       }
     }
   ],
-  "/AccountProcessingInfraStack/UpperCase/ServiceRole/DefaultPolicy/Resource": [
+  "/AccountProcessingInfraStack/ProcessTransfer/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "UpperCaseServiceRoleDefaultPolicyE1F4A6AE"
+      "data": "ProcessTransferServiceRoleDefaultPolicy43FCE7CF"
     },
     {
       "type": "aws:cdk:creationStack",
