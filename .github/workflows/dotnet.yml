@@ -49,7 +49,7 @@ jobs:
 
     - name: Install ReportGenerator
       run: |
-        dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.29
+        dotnet tool install --global dotnet-reportgenerator-globaltool 
         echo "Adding dotnet tools to PATH"
         echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
