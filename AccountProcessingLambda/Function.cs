@@ -18,7 +18,8 @@ using Unit = System.ValueTuple;
 IDynamoDBContext dynamoDbContext = new DynamoDBContextBuilder().WithDynamoDBClient(() => new AmazonDynamoDBClient()).Build();
 
 Validator<BookTransfer> validate = AccountProcessingLambda.Validation.DateNotPast(() => DateTime.UtcNow);
-Func<BookTransfer, Task<Exceptional<Unit>>> save = command => DynamoDb.TryExecute(dynamoDbContext, command);
+// Bind the context to produce a functional save function specific to BookTransfer
+Func<BookTransfer, Task<Exceptional<Unit>>> save = dynamoDbContext.WithContext<BookTransfer>();
 
 Validation<BookTransfer> ParseRequest(string input)
 {

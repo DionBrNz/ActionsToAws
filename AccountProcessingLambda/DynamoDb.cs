@@ -25,19 +25,26 @@ public static class DynamoDb
             return new Unit();
         };
 
-    public static Func<IDynamoDBContext, object, Task<Exceptional<Unit>>> TryExecute =>
-        async (context, entity) =>
+    // Use a generic method so the DynamoDBContext SaveAsync receives the concrete
+    // type rather than System.Object which causes the SDK to try to map "object".
+    public static async Task<Exceptional<Unit>> TryExecute<T>(IDynamoDBContext context, T entity)
+    {
+        try
         {
-            try
-            {
-                Logger.LogInformation("About to save");
-                await context.SaveAsync(entity);
-                return new Unit();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "error");
-                return ex;
-            }
-        };
+            Logger.LogInformation("About to save");
+            await context.SaveAsync(entity).ConfigureAwait(false);
+            return new Unit();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "error");
+            return ex;
+        }
+    }
+
+    // Functional helper: bind a concrete IDynamoDBContext to produce a function that
+    // saves entities of type T. This lets callers compose the save function in a
+    // functional / curried style: var save = dbContext.WithContext<BookTransfer>();
+    public static Func<T, Task<Exceptional<Unit>>> WithContext<T>(this IDynamoDBContext context)
+        => entity => TryExecute(context, entity);
 }
