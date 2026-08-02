@@ -4,26 +4,26 @@ using static Functional.F;
 
 namespace AccountProcessingLambda;
 
-public abstract class Command
+public abstract record Command
 {
-    public DateTime Timestamp { get; set; }
+    // Make timestamp init-only so Command instances are immutable once created
+    public DateTime Timestamp { get; init; }
 
     public T WithTimestamp<T>(DateTime timestamp)
         where T : Command
     {
-        T result = (T)MemberwiseClone();
-        result.Timestamp = timestamp;
-        return result;
+        // Use record 'with' expression to produce an immutable copy with updated timestamp
+        return (T)(this with { Timestamp = timestamp });
     }
 }
 
 [DynamoDBTable("AccountsTable")]
-public class MakeTransfer : Command
+public record MakeTransfer : Command
 {
     [DynamoDBHashKey]
-    public Guid DebitedAccountId { get; set; }
+    public Guid DebitedAccountId { get; init; }
 
-    // make properties init-only and provide defaults to satisfy nullable checking
+    // properties are init-only to enforce immutability
     public string Beneficiary { get; init; } = default!;
     public string Iban { get; init; } = default!;
     public string Bic { get; init; } = default!;
@@ -58,4 +58,4 @@ public class MakeTransfer : Command
     }
 }
 
-public class BookTransfer : MakeTransfer { }
+public record BookTransfer : MakeTransfer;
