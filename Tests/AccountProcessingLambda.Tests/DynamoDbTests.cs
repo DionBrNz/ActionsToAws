@@ -71,7 +71,7 @@ public class DynamoDbTests
     {
         var mockContext = new Mock<IDynamoDBContext>();
         mockContext
-            .Setup(m => m.LoadAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .Setup(m => m.LoadAsync<object>(It.IsAny<object>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new object())
             .Verifiable();
 
