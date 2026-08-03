@@ -45,7 +45,8 @@ jobs:
     - name: Test (with coverage)
       run: |
         # Run tests and collect code coverage (XPlat collector produces cobertura xml)
-        dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" -r TestResults
+        # Use --results-directory to avoid ambiguous -r short option being interpreted as a runtime
+        dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory TestResults
 
     - name: Install ReportGenerator
       run: |
